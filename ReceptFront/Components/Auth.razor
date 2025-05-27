@@ -1,0 +1,59 @@
+﻿@inject NavigationManager navigator
+@inject ProtectedLocalStorage ls
+
+@if (showContent)
+{
+    @ChildContent
+}
+else
+{
+    @if (firstRender)
+    {
+        NavigateToLogin();
+    }
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private bool showContent = false;
+    private bool firstRender = false;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        this.firstRender = true;
+
+        if (firstRender)
+        {
+            string url = new Uri(navigator.Uri).LocalPath;
+            Console.WriteLine(url);
+            if (url == "/login" || url == "/register")
+            {
+                showContent = true;
+
+            }
+            else
+            {
+                var auth = await ls.GetAsync<string>("auth");
+                var refresh = await ls.GetAsync<string>("refresh");
+
+                if (auth.Success && refresh.Success)
+                {
+                    showContent = true;
+                }
+            }
+        }
+        else
+        {
+            showContent = true;
+        }
+
+        StateHasChanged();
+    }
+
+    private void NavigateToLogin()
+    {
+        navigator.NavigateTo("/login");
+    }
+}

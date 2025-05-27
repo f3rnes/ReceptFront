@@ -1,0 +1,70 @@
+﻿@page "/register"
+@inject HttpClient client
+@inject ProtectedLocalStorage ls
+@inject NavigationManager navigator
+
+<PageTitle>Registr</PageTitle>
+
+<div class="wrapper">
+    <div class="login ">
+        <div class="field">
+            <p>Login </p>
+            <input type="text" @bind="Name" />
+        </div>
+        <div class="field">
+            <p>Password</p>
+            <input type="password" @bind="Password" />
+            <div class="field">
+                <p>FirstName</p>
+                <input type="text" @bind="FirstName" />
+            </div>
+            <div class="field">
+                <p>LastName</p>
+                <input type="text" @bind="LastName" />
+            </div>
+        </div>
+        <a href="https://localhost:7138/login">Already have account?</a>
+        <button @onclick="RegistrIn"> Sign In </button>
+    </div>
+</div>
+
+@code {
+
+    public record RegistrRequest(string FirstName, string LastName, string Login, string Password);
+
+    public record TokenPair(string AccessToken, string RefreshToken);
+
+    private string Name;
+    private string Password;
+    private string FirstName;
+    private string LastName;
+
+    private async Task RegistrIn()
+    {
+        RegistrRequest request = new(FirstName, LastName, Name, Password);
+
+        Console.WriteLine($"{Name} {Password}");
+
+        var response = await client.PostAsJsonAsync<RegistrRequest>("auth/register", request);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var tokens = await response.Content.ReadFromJsonAsync<TokenPair>();
+            await ls.SetAsync("auth", tokens.AccessToken);
+            await ls.SetAsync("refresh", tokens.RefreshToken);
+            navigator.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine("Fail!");
+        }
+    }
+
+
+
+
+}
+
+
+
+

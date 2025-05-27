@@ -1,0 +1,33 @@
+﻿button {
+    display: block;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    gap: 10px;
+    border: 2px solid black;
+    border-radius: 30px;
+    padding: 15px;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+button {
+    background-color: cornflowerblue;
+    border: none;
+    padding: 7px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.field input {
+    width: 97%;
+}

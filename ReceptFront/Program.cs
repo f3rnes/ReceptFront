@@ -12,6 +12,8 @@ namespace ReceptFront
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddScoped(_=>new HttpClient { BaseAddress = new Uri("https://localhost:7176/api/") });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
